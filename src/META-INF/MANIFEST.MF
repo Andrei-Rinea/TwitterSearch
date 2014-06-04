@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: twitter4j-core-3.0.5.jar jfxmessagebox-1.1.0.jar
+Main-Class: TwitterSearch.Main
+
