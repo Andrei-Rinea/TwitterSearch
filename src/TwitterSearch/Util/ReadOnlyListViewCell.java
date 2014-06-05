@@ -25,7 +25,7 @@ public class ReadOnlyListViewCell extends ListCell {
             FXMLLoader loader = new FXMLLoader();
             loader.getNamespace().put("model", item);
             loader.setLocation(fxmlURL);
-            GridPane gp = (GridPane) loader.load();
+            GridPane gp = loader.load();
             setGraphic(gp);
 
         } catch (IOException e) {

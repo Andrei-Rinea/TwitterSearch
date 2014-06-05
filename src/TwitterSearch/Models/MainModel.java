@@ -1,18 +1,15 @@
 package TwitterSearch.Models;
+import TwitterSearch.Concurrency.TwitterQueryTask;
+import TwitterSearch.DataAccess.TwitterProxy;
+import TwitterSearch.Util.ActionHandler;
+import TwitterSearch.Util.Messenger;
 
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import TwitterSearch.Concurrency.TwitterQuerySucceedEvent;
-import TwitterSearch.Concurrency.TwitterQueryTask;
-import TwitterSearch.DataAccess.TwitterProxy;
-import TwitterSearch.Util.ActionHandler;
-import TwitterSearch.Util.Messenger;
 
 import java.awt.*;
 import java.io.IOException;
@@ -43,35 +40,15 @@ public class MainModel {
         busyProperty = new SimpleBooleanProperty(false);
         resultsProperty = new SimpleListProperty<>(FXCollections.<TweetModel>observableArrayList());
 
+        queryActionProperty = new SimpleObjectProperty<>(actionEvent -> onQuery());
+        stopActionProperty = new SimpleObjectProperty<>(actionEvent -> onStop());
 
-
-        queryActionProperty = new SimpleObjectProperty<EventHandler<ActionEvent>>(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                onQuery();
-            }
-        });
-        stopActionProperty = new SimpleObjectProperty<EventHandler<ActionEvent>>(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                onStop();
-            }
+        queryTextProperty.addListener((observableValue, s, s2) -> {
+            String queryText = queryTextProperty.get();
+            queryActionDisabledProperty.setValue(queryText == null || queryText.isEmpty());
         });
 
-        queryTextProperty.addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2) {
-                String queryText = queryTextProperty.get();
-                queryActionDisabledProperty.setValue(queryText == null || queryText.isEmpty());
-            }
-        });
-
-        itemActionHandler = new ActionHandler<Object>() {
-            @Override
-            public void handle(Object argument) {
-                onItemAction((TweetModel) argument);
-            }
-        };
+        itemActionHandler = argument -> onItemAction((TweetModel) argument);
     }
 
     private void onItemAction(TweetModel tweet) {
@@ -89,12 +66,9 @@ public class MainModel {
         service = new Service<TweetModel[]>() {
             @Override
             protected Task<TweetModel[]> createTask() {
-                return new TwitterQueryTask(twitterProxy, queryTextProperty.get(), new EventHandler<TwitterQuerySucceedEvent>() {
-                    @Override
-                    public void handle(TwitterQuerySucceedEvent event) {
-                        resultsProperty.setAll(event.getTweets());
-                        busyProperty.set(false);
-                    }
+                return new TwitterQueryTask(twitterProxy, queryTextProperty.get(), event -> {
+                    resultsProperty.setAll(event.getTweets());
+                    busyProperty.set(false);
                 });
             }
         };
