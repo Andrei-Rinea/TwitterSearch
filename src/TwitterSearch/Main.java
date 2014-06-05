@@ -7,10 +7,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-import sample.Controllers.MainController;
-import sample.DataAccess.TwitterProxyImpl;
-import sample.Models.MainModel;
-import sample.Util.MessengerImpl;
+import TwitterSearch.Controllers.MainController;
+import TwitterSearch.DataAccess.TwitterProxyImpl;
+import TwitterSearch.Models.MainModel;
+import TwitterSearch.Util.MessengerImpl;
 
 import java.net.URL;
 
