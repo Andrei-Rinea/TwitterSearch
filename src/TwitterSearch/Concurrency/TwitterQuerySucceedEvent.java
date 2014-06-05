@@ -8,8 +8,10 @@ public class TwitterQuerySucceedEvent extends Event {
     private final String queryText;
     private final TweetModel[] tweets;
 
+    private final static EventType<TwitterQuerySucceedEvent> type = new EventType<>();
+
     public TwitterQuerySucceedEvent(String queryText, TweetModel[] tweets) {
-        super(new EventType<TwitterQuerySucceedEvent>());
+        super(type);
         this.queryText = queryText;
         this.tweets = tweets;
     }

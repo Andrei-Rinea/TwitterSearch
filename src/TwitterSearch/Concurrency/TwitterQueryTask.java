@@ -2,9 +2,11 @@ package TwitterSearch.Concurrency;
 
 import TwitterSearch.DataAccess.TwitterProxy;
 import TwitterSearch.Models.TweetModel;
+
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+
 import twitter4j.Status;
 
 import java.util.List;
